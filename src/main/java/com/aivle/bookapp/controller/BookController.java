@@ -77,16 +77,36 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
-    // 교안 p.129, p.130: GET /books/search - 검색
-    @GetMapping("/search")
-    public List<Book> search(@RequestParam(required = false) String keyword,
-                             @RequestParam(required = false) String title,
-                             @RequestParam(required = false) String author) {
-        if (title != null && author != null) {
-            return bookService.searchByTitleAndAuthor(title, author);
-        }
-        return bookService.search(keyword != null ? keyword : "");
+    @GetMapping("/search/title")
+    public List<Book> searchByTitle(@RequestParam String title) {
+        return bookService.searchByTitle(title);
     }
+
+    @GetMapping("/search/author")
+    public List<Book> searchByAuthor(@RequestParam String author) {
+        return bookService.searchByAuthor(author);
+    }
+
+    @GetMapping("/search/publisher")
+    public List<Book> searchByPublisher(@RequestParam String publisher) {
+        return bookService.searchByPublisher(publisher);
+    }
+
+    @GetMapping("/search/content")
+    public List<Book> searchByContent(@RequestParam String content) {
+        return bookService.searchByContent(content);
+    }
+
+    @GetMapping("/search/tags")
+    public List<Book> searchByTags(@RequestParam String tags) {
+        return bookService.searchByTags(tags);
+    }
+
+    @GetMapping("/search/keyword")
+    public List<Book> searchByKeyword(@RequestParam String keyword) {
+        return bookService.searchByKeyword(keyword);
+    }
+  
     @PatchMapping("/books/{id}/cover")
     public Book updateCoverImage(@PathVariable Long id, @RequestBody CoverImageRequest request){
         return bookService.updateCoverImage(id, request.getCoverImageUrl());
