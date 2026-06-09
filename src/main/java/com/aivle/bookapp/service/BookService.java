@@ -118,4 +118,34 @@ public class BookService {
     private String now() {
         return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
+
+    @Transactional(readOnly = true)
+    public List<Book> searchByTitle(String title) {
+        return bookRepository.findByTitleContaining(title);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> searchByAuthor (String author) {
+        return bookRepository.findByAuthorContaining(author);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> searchByPublisher (String publisher) {
+        return bookRepository.findByPublisherContaining(publisher);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> searchByContent (String content) {
+        return bookRepository.findByContentContaining(content);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> searchByTags (String tags) {
+        return bookRepository.findByTagsContaining(tags);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> searchByKeyword (String keyword) {
+        return bookRepository.findByKeyword(keyword);
+    }
 }
