@@ -30,22 +30,6 @@ public class BookSpecification {
 
                     return cb.or(p1, p2, p3, p4, p5);
             }
-
-//            if ("title".equalsIgnoreCase(searchType)) {
-//                // title 컬럼만 LIKE 검색
-//                return cb.like(cb.lower(root.get("title")), likePattern.toLowerCase());
-//
-//            } else if ("author".equalsIgnoreCase(searchType)) {
-//                // author 컬럼만 LIKE 검색
-//                return cb.like(cb.lower(root.get("author")), likePattern.toLowerCase());
-//
-//            } else {
-//                // searchType = "all" 또는 다른 값 → title 또는 author 검색
-//                Predicate titlePredicate = cb.like(cb.lower(root.get("title")), likePattern.toLowerCase());
-//                Predicate authorPredicate = cb.like(cb.lower(root.get("author")), likePattern.toLowerCase());
-//
-//                return cb.or(titlePredicate, authorPredicate);  // OR 조건
-//            }
         };
     }
 }
