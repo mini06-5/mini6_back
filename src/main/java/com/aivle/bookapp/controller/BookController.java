@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,16 +60,13 @@ public class BookController {
     public BookResponse updateBook(
             @PathVariable Long id,
             @RequestBody BookUpdateRequest request,
-            @RequestHeader("Authorization") String token) { // 헤더로 토큰 전달
-        String loginUserId = jwtUtil.getNicknameFromToken(token); // 토큰 해독
-
+            @AuthenticationPrincipal String loginUserId) {
         return BookResponse.from(bookService.update(id, request.toEntity(), loginUserId));
     }
 
     // 교안 p.167: DELETE /books/{id} - 삭제 (204 No Content)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id, @RequestHeader("Authorization") String token) {  // 헤더로 토큰 전달
-        String loginUserId = jwtUtil.getNicknameFromToken(token);  // 토큰 해독
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id, @AuthenticationPrincipal String loginUserId) {
 
         bookService.delete(id, loginUserId);
         return ResponseEntity.noContent().build();

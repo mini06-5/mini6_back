@@ -4,6 +4,7 @@ import com.aivle.bookapp.domain.Book;
 import com.aivle.bookapp.exception.BookAlreadyExistsException;
 import com.aivle.bookapp.exception.BookNotFoundException;
 import com.aivle.bookapp.repository.BookRepository;
+import com.aivle.bookapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     // 교안 p.171: 조회 메서드 - readOnly = true 최적화
     @Transactional(readOnly = true)

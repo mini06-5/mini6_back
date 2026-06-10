@@ -26,7 +26,7 @@ public class BookappApplication {
 
 				repo.save(Book.builder()
 						.title("별을 건너는 개발자")
-						.author("user1")
+						.author("김하린")
 						.publisher("걷기출판")
 						.content("우주 정거장에서 코드를 작성하는 개발자가 잃어버린 기억과 데이터를 찾아가는 이야기입니다.")
 						.tags("#SF #성장 #개발자")
