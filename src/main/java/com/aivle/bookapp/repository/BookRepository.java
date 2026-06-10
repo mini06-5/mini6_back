@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
@@ -36,6 +37,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByTitleAndAuthor(String title, String Author);
 
     boolean existsByTitleAndAuthor(String title, String author);
+
+    Optional<Long> findIdByTitleAndAuthor(String title, String author);
 
     // 전체 검색
     @Query("SELECT b FROM Book b WHERE " +

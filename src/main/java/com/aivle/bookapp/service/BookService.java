@@ -43,7 +43,7 @@ public class BookService {
         if (book.getLikeCount() == null) {
             book.setLikeCount(0);
         }
-        if (bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor())){
+        if (bookRepository.findIdByTitleAndAuthor(book.getTitle(), book.getAuthor()).isPresent()){
             throw new BookAlreadyExistsException(book.getTitle());
         }
         return bookRepository.save(book);
