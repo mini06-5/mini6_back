@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
+    Optional<Book> findIdByTitleAndAuthor(String title, String author);
+
     // 교안 p.128: 쿼리 메서드 - 제목 일치 검색
     List<Book> findByTitle(String title);
     
