@@ -7,6 +7,7 @@ import com.aivle.bookapp.dto.request.CoverImageRequest;
 import com.aivle.bookapp.dto.request.LikeRequest;
 import com.aivle.bookapp.dto.response.BookPageResponse;
 import com.aivle.bookapp.dto.response.BookResponse;
+import com.aivle.bookapp.service.AiRecommendationService;
 import com.aivle.bookapp.service.BookService;
 import com.aivle.bookapp.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final AiRecommendationService aiRecommendationService;
     private final JwtUtil jwtUtil;
 
     // 교안 p.157: GET /books - 목록 조회
@@ -145,5 +148,11 @@ public class BookController {
             @AuthenticationPrincipal String loginUserId
     ) {
         return BookResponse.from(bookService.like(id, request.getUserId(), loginUserId));
+    }
+
+    @GetMapping("/ai-recommendation")
+    public ResponseEntity<Map<String, Object>> getAiRecommendation() {
+        Map<String, Object> recommendation = aiRecommendationService.getCachedRecommendation();
+        return ResponseEntity.ok(recommendation);
     }
 }
