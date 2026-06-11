@@ -1,6 +1,7 @@
 package com.aivle.bookapp.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,9 +25,10 @@ public class Book {
     @NotBlank
     private String title;
 
-    @Column(nullable = false)
-    @NotBlank
-    private String author;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author")
+    private User author;
 
     @Column(nullable = true)
     private String publisher;

@@ -1,6 +1,7 @@
 package com.aivle.bookapp.repository;
 
 import com.aivle.bookapp.domain.Book;
+import com.aivle.bookapp.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 
-    Optional<Long> findIdByTitleAndAuthor(String title, String author); // findId.. 이므로 반환값 Long으로 수정
+    Optional<Long> findIdByTitleAndAuthor(String title, User author); // findId.. 이므로 반환값 Long으로 수정
 
     // 교안 p.128: 쿼리 메서드 - 제목 일치 검색
     List<Book> findByTitle(String title);
@@ -40,7 +41,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     // 전체 검색
     @Query("SELECT b FROM Book b WHERE " +
             "b.title LIKE %:keyword% OR " +
-            "b.author LIKE %:keyword% OR " +
+            "b.author.nickname LIKE %:keyword% OR " +
             "b.publisher LIKE %:keyword% OR " +
             "b.content LIKE %:keyword% OR " +
             "b.tags LIKE %:keyword%")

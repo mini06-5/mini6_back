@@ -96,7 +96,13 @@ public class BookService {
         if (book.getLikeCount() == null) {
             book.setLikeCount(0);
         }
-        if (bookRepository.findIdByTitleAndAuthor(book.getTitle(), book.getAuthor()).isPresent()){
+        if (book.getAuthor() == null || book.getAuthor().getUserId() == null) {
+            throw new IllegalArgumentException("저자 정보가 없습니다.");
+        }
+        User realUser = userRepository.findByUserId(book.getAuthor().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        book.setAuthor(realUser);
+        if (bookRepository.findIdByTitleAndAuthor(book.getTitle(), realUser).isPresent()){
             throw new BookAlreadyExistsException(book.getTitle());
         }
         return bookRepository.save(book);
@@ -108,7 +114,7 @@ public class BookService {
         Book existing = findById(id);
 
         // 책의 작가와 로그인한 유저의 아이디 대조
-        if (!existing.getAuthor().equals(loginUserId)) {
+        if (existing.getAuthor() == null || !existing.getAuthor().getUserId().equals(loginUserId)) {
             throw new IllegalArgumentException("자신이 등록한 책만 수정할 수 있습니다.");
         }
         
@@ -116,7 +122,9 @@ public class BookService {
             existing.setTitle(book.getTitle());
         }
         if (book.getAuthor() != null) {
-            existing.setAuthor(book.getAuthor());
+            User realUser = userRepository.findByUserId(book.getAuthor().getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+            existing.setAuthor(realUser);
         }
         if (book.getPublisher() != null) {
             existing.setPublisher(book.getPublisher());
@@ -148,12 +156,12 @@ public class BookService {
     // 교안 p.167: DELETE 삭제 비즈니스 로직
     @Transactional
     public void delete(Long id, String loginUserId) {
-        if (!bookRepository.existsById(id)) {
-            throw new BookNotFoundException(id);
-        }
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
 
         // 책의 작가와 로그인한 유저의 아이디 대조
-        if (!findById(id).getAuthor().equals(loginUserId)) {
+        if (book.getAuthor() == null || loginUserId == null ||
+                !book.getAuthor().getUserId().trim().equalsIgnoreCase(loginUserId.trim())) {
             throw new IllegalArgumentException("자신이 등록한 책만 삭제할 수 있습니다.");
         }
 
@@ -224,14 +232,14 @@ public class BookService {
     }
 
     @Transactional
-    public Book like(Long bookId, String userId) {
+    public Book like(Long bookId, String userId, String loginUserId) {
         Book book = findById(bookId);
 
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        User user = userRepository.findByUserId(loginUserId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + loginUserId));
 
         Likes existingLike = likeRepository
-                .findByUser_UserIdAndBook_Id(userId, bookId)
+                .findByUser_UserIdAndBook_Id(loginUserId, bookId)
                 .orElse(null);
 
         Integer currentLikeCount = book.getLikeCount();
