@@ -6,7 +6,7 @@ spring:
     name: bookapp
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:./data/bookdb
+    url: jdbc:h2:file:~/bookdb;
     username: sa
     password: 1234
   h2:

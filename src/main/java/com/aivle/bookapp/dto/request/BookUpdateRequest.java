@@ -1,6 +1,8 @@
 package com.aivle.bookapp.dto.request;
 
 import com.aivle.bookapp.domain.Book;
+import com.aivle.bookapp.domain.User;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +13,8 @@ import lombok.Setter;
 public class BookUpdateRequest {
 
     private String title;
-    private String author;
+    @NotNull
+    private User author;
     private String publisher;
     private String content;
     private String tags;

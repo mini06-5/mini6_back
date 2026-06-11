@@ -1,7 +1,9 @@
 package com.aivle.bookapp.dto.request;
 
 import com.aivle.bookapp.domain.Book;
+import com.aivle.bookapp.domain.User;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,8 +16,8 @@ public class BookCreateRequest {
     @NotBlank
     private String title;
 
-    @NotBlank
-    private String author;
+    @NotNull
+    private User author;
 
     private String publisher;
     private String content;

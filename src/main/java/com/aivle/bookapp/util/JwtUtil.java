@@ -93,16 +93,6 @@ public class JwtUtil {
 
     // 토큰으로 부터 닉네임을 가져옴
     public String getNicknameFromToken(String token) {
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        Claims claims = Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-        return claims.get("nickname", String.class);
+        return getClaims(token).get("nickname", String.class);
     }
 }

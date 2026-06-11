@@ -138,11 +138,12 @@ public class BookController {
                 .map(BookResponse::from)
                 .toList();
     }
-    @PatchMapping("/{id}/like")
+    @PostMapping("/{id}/like")
     public BookResponse like(
             @PathVariable Long id,
-            @RequestBody LikeRequest request
+            @RequestBody LikeRequest request,
+            @AuthenticationPrincipal String loginUserId
     ) {
-        return BookResponse.from(bookService.like(id, request.getUserId()));
+        return BookResponse.from(bookService.like(id, request.getUserId(), loginUserId));
     }
 }

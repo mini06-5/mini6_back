@@ -1,6 +1,7 @@
 package com.aivle.bookapp.dto.response;
 
 import com.aivle.bookapp.domain.Book;
+import com.aivle.bookapp.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ public class BookResponse {
 
     private Long id;
     private String title;
-    private String author;
+    private User author;
     private String publisher;
     private String content;
     private String tags;
