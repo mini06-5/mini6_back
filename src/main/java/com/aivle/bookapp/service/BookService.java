@@ -123,7 +123,7 @@ public class BookService {
                 book.getAuthor() : existing.getAuthor();
 
         Book existsBook = bookRepository.findByTitleAndAuthor(book.getTitle(), book.getAuthor()).orElse(null);
-        if (!existsBook.getId().equals(id))
+        if (existsBook != null && !existsBook.getId().equals(id))
             throw new BookAlreadyExistsException("이미 작성하신 제목의 도서입니다.");
         
         if (book.getTitle() != null) {
