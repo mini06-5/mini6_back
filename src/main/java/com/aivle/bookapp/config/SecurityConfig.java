@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers("/users/register", "/users/login").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/hello", "/hello/**", "/greet").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/books", "/books/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/books").permitAll()
                         .anyRequest().authenticated()
                 )
 
