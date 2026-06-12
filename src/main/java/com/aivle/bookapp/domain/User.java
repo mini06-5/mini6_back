@@ -33,4 +33,7 @@ public class User {
     @Column(nullable = false)
     @NotBlank
     private String nickname;
+
+    @Column(length = 1000)
+    private String refreshToken;
 }

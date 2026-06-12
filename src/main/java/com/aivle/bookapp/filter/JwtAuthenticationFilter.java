@@ -22,6 +22,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        return path.equals("/users/register")
+                || path.equals("/users/login")
+                || path.equals("/users/refresh")
+                || path.startsWith("/h2-console");
+    }
+
+    @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -38,25 +48,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authorizationHeader.substring(7);
 
-        // 토큰이 유효하면 Spring Security 인증 정보 등록
-        if (jwtUtil.validateToken(token)
-                && jwtUtil.isAccessToken(token)
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
+        try {
 
-            String userId = jwtUtil.getUserId(token);
+            if (!jwtUtil.validateToken(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"message\":\"액세스 토큰이 만료되었거나 유효하지 않습니다.\"}");
+                return;
+            }
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userId,
-                            null,
-                            Collections.emptyList()
-                    );
+            if (!jwtUtil.isAccessToken(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"message\":\"액세스 토큰이 아닙니다.\"}");
+                return;
+            }
 
-            authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                String userId = jwtUtil.getUserId(token);
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userId,
+                                null,
+                                Collections.emptyList()
+                        );
+
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"message\":\"토큰 인증에 실패했습니다.\"}");
+            return;
         }
 
         filterChain.doFilter(request, response);
