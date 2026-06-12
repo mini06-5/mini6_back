@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class AiRecommendationService implements ApplicationRunner {
     private final BookRepository bookRepository;
     private final AiRecommendationRepository aiRecommendationRepository;
-    @Value("${openai.api.key}")
+    @Value("${openai.api.key:}")
     private String apiKey;
 
     @Override
@@ -89,12 +89,12 @@ public class AiRecommendationService implements ApplicationRunner {
                 이번달은 %d달이야
                 다음은 우리 도서관의 책 목록이야:
                 %s
-                
-                'reason' 문장은 책방의 다정한 북 큐레이터나 사서처럼 감성적이고 
+
+                'reason' 문장은 책방의 다정한 북 큐레이터나 사서처럼 감성적이고
                 친절한 존댓말 말투(~해보세요, ~를 추천해 드립니다! 등)로 한 두문장으로 정성스럽게 작성해줘.
                 이 중에서 이번 %d월의 계절감이나 분위기와 가장 잘 어울리는 추천작을 하나 골라줘.
                 결과는 반드시 아래와 같은 순수 JSON 형태로만 응답해. 백틱(```)이나 다른 설명은 절대 넣지 마.
-                추천 이유는 
+                추천 이유는
                 {"recommendedId": 숫자, "reason": "추천 이유"}
                 """, currentMonth, simplifiedBooks.toString(), currentMonth);
 
@@ -139,7 +139,8 @@ public class AiRecommendationService implements ApplicationRunner {
             Book targetBook = bookRepository.findById(recommendedBookId)
                     .orElseThrow(() -> new RuntimeException("AI가 추천한 도서가 DB에 없습니다. ID: "));
 
-            if (reason.isEmpty()) reason = currentMonth + "월에 어울리는 추천 도서입니다.";
+            if (reason.isEmpty())
+                reason = currentMonth + "월에 어울리는 추천 도서입니다.";
 
             AiRecommendation newRec = AiRecommendation.builder()
                     .id(1L)
@@ -148,7 +149,6 @@ public class AiRecommendationService implements ApplicationRunner {
                     .build();
 
             aiRecommendationRepository.save(newRec);
-
 
         } catch (Exception e) {
             throw new RuntimeException("AI 추천 서비스 실패", e);

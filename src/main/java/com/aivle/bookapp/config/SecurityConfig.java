@@ -40,7 +40,7 @@ public class SecurityConfig {
                 ))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/register", "/users/login", "/users/refresh").permitAll()
+                        .requestMatchers("/users/register", "/users/login", "/users/refresh", "/error").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books", "/books/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/books").permitAll()
