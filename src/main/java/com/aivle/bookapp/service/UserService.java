@@ -148,6 +148,12 @@ public class UserService {
             user.setPassword(request.getPassword());
         }
 
-        return UserProfileResponse.from(user);
+        String newAccessToken = jwtUtil.createAccessToken(user);
+        String newRefreshToken = jwtUtil.createRefreshToken(user);
+
+        user.setRefreshToken(newRefreshToken);
+        userRepository.save(user);
+
+        return UserProfileResponse.from(user, newAccessToken, newRefreshToken);
     }
 }

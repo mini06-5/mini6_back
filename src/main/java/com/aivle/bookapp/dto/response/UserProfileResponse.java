@@ -18,6 +18,8 @@ public class UserProfileResponse {
     private String name;     // 사용자 실명
     private String email;    // 사용자 이메일
     private String nickname; // 사용자 닉네임
+    private String accessToken;
+    private String refreshToken;
 
     /**
      * User 엔티티 객체를 UserProfileResponse DTO로 변환하는 정적 팩토리 메서드입니다.
@@ -31,6 +33,17 @@ public class UserProfileResponse {
                 .name(user.getName())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
+                .build();
+    }
+
+    public static UserProfileResponse from(User user, String accessToken, String refreshToken) {
+        return UserProfileResponse.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 }
