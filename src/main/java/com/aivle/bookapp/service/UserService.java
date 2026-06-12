@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.aivle.bookapp.exception.TokenUnauthorizedException;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class UserService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public UserLoginResponse login(UserLoginRequest request) {
         User user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(request.getUserId()));
@@ -76,6 +77,9 @@ public class UserService {
         String accessToken = jwtUtil.createAccessToken(user);
         String refreshToken = jwtUtil.createRefreshToken(user);
 
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
+
         return UserLoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -89,17 +93,21 @@ public class UserService {
         String refreshToken = request.getRefreshToken();
 
         if (!jwtUtil.validateToken(refreshToken)) {
-            throw new IllegalArgumentException("리프레시 토큰이 유효하지 않습니다.");
+            throw new TokenUnauthorizedException("리프레시 토큰이 만료되었거나 유효하지 않습니다.");
         }
 
         if (!jwtUtil.isRefreshToken(refreshToken)) {
-            throw new IllegalArgumentException("리프레시 토큰이 아닙니다.");
+            throw new TokenUnauthorizedException("리프레시 토큰이 아닙니다.");
         }
 
         String userId = jwtUtil.getUserId(refreshToken);
 
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
+            throw new TokenUnauthorizedException("DB의 리프레시 토큰과 일치하지 않습니다.");
+        }
 
         String newAccessToken = jwtUtil.createAccessToken(user);
 
@@ -147,9 +155,12 @@ public class UserService {
             user.setPassword(request.getPassword());
         }
 
-        // 정보가 변경되었으므로, 변경된 nickname/email 등이 적용된 새 Access Token 발급
         String newAccessToken = jwtUtil.createAccessToken(user);
+        String newRefreshToken = jwtUtil.createRefreshToken(user);
 
-        return UserProfileResponse.from(user, newAccessToken);
+        user.setRefreshToken(newRefreshToken);
+        userRepository.save(user);
+
+        return UserProfileResponse.from(user, newAccessToken, newRefreshToken);
     }
 }

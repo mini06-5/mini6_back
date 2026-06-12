@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
@@ -39,5 +40,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BookAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleAlready(BookAlreadyExistsException e){
         return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
+    }
+
+    @ExceptionHandler(TokenUnauthorizedException.class)
+    public ResponseEntity<Map<String, String>> handleTokenUnauthorized(TokenUnauthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", e.getMessage()));
     }
 }
