@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+  pre_build:
+    commands:
+      - echo "== 백엔드 빌드 준비 (실행 권한 부여) =="
+      - chmod +x ./gradlew
+  build:
+    commands:
+      - echo "== Spring Boot 프로젝트 빌드 및 테스트 시작 =="
+      - ./gradlew clean build
+  post_build:
+    commands:
+      - echo "== 백엔드 빌드 완료 =="
+      
+artifacts:
+  files:
+    - build/libs/*.jar
+  discard-paths: yes
