@@ -17,11 +17,11 @@ phases:
       - echo "== 백엔드 빌드 완료 =="
 
   artifacts:
-  files:
-    - build/libs/*.jar
-    - appspec.yml
-    - scripts/**
-  discard-paths: no    
+    files:
+      - build/libs/*.jar
+      - appspec.yml
+      - scripts/**
+    discard-paths: no    
 
 # artifacts:
 #   files:
