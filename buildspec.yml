@@ -15,8 +15,15 @@ phases:
   post_build:
     commands:
       - echo "== 백엔드 빌드 완료 =="
-      
-artifacts:
+
+  artifacts:
   files:
     - build/libs/*.jar
-  discard-paths: yes
+    - appspec.yml
+    - scripts/**
+  discard-paths: no    
+
+# artifacts:
+#   files:
+#     - build/libs/*.jar
+#   discard-paths: yes
