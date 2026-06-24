@@ -22,5 +22,16 @@ echo "> JAR Name: $JAR_NAME"
 echo "> $JAR_NAME 에 실행권한 추가"
 chmod +x $JAR_NAME
 
+ENV_FILE=/home/ec2-user/app/backend.env
+
+if [ -f "$ENV_FILE" ]; then
+    echo "> 환경변수 파일 로드"
+    set -a
+    source "$ENV_FILE"
+    set +a
+else
+    echo "> 환경변수 파일이 없습니다: $ENV_FILE"
+fi
+
 echo "> $JAR_NAME 실행"
 nohup java -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
