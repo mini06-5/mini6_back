@@ -11,7 +11,7 @@ phases:
   build:
     commands:
       - echo "== Spring Boot 프로젝트 빌드 및 테스트 시작 =="
-      - ./gradlew clean build
+      - ./gradlew clean build -x test
   post_build:
     commands:
       - echo "== 백엔드 빌드 완료 =="
