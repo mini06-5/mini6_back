@@ -77,7 +77,7 @@ public class SecurityConfig {
         
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5173",
-                "http://http://aivle05-book-frontend-bukkit.s3-website-us-east-1.amazonaws.com" 
+                "http://aivle05-book-frontend-bukkit.s3-website-us-east-1.amazonaws.com" 
         ));
         // 프론트엔드가 사용할 수 있는 HTTP 메서드 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
