@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
 	// Spring Cloud AWS Parameter Store 라이브러리 추가
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store:3.3.0'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store:4.0.0'
 
 	implementation 'org.springframework.boot:spring-boot-h2console'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
