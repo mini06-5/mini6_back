@@ -52,6 +52,9 @@ public class SecurityConfig {
                 ))
 
                 .authorizeHttpRequests(auth -> auth
+                        //ALB 상태 검사(Health Check)를 위해 /health 경로 무조건 허용
+                        .requestMatchers(HttpMethod.GET, "/health").permitAll()
+
                         .requestMatchers("/users/register", "/users/login", "/users/refresh").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books", "/books/**").permitAll()
