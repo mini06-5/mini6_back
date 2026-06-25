@@ -9,7 +9,7 @@ spring:
   config:
     import: 
       - optional:application-local.yml
-      - aws-parameterstore:/bookapp/prod/# AWS 파라미터 경로
+      - aws-parameterstore:/bookapp/prod/ # AWS 파라미터 경로
   cloud:
     aws:
       region:
