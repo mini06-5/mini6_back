@@ -4,25 +4,30 @@ phases:
   install:
     runtime-versions:
       java: corretto17
+
   pre_build:
     commands:
-      - echo "== 백엔드 빌드 준비 (실행 권한 부여) =="
+      - echo "== 백엔드 빌드 준비 =="
       - chmod +x ./gradlew
+
   build:
     commands:
-      - echo "== Spring Boot 프로젝트 빌드 및 테스트 시작 =="
-      - ./gradlew clean build -x test
+      - echo "== Spring Boot 프로젝트 빌드 시작 =="
+      - ./gradlew clean build
+
   post_build:
     commands:
-      - echo "== 백엔드 빌드 완료 =="
+      - echo "== 배포 패키지 생성 =="
+      - mkdir -p deploy
+      - cp build/libs/*SNAPSHOT.jar deploy/app.jar
+      - rm -f deploy/*plain.jar
+      - cp appspec.yml deploy/
+      - cp -r scripts deploy/
+      - ls -al deploy
 
 artifacts:
+  base-directory: deploy
   files:
-    - build/libs/*.jar
+    - app.jar
     - appspec.yml
-    - scripts/**
-  discard-paths: no  
-# artifacts:
-#   files:
-#     - build/libs/*.jar
-#   discard-paths: yes
+    - scripts/**/*

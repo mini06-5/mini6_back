@@ -1,26 +1,27 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/step1
-# 프로젝트 이름 대신 jar 파일명을 직접 찾도록 변경
-JAR_NAME=$(ls -tr $REPOSITORY/build/libs/*-SNAPSHOT.jar | grep -v plain | tail -n 1)
+APP_DIR=/home/ec2-user/app/step1
+JAR_FILE=$APP_DIR/app.jar
 
-echo "> 현재 구동 중인 애플리케이션 pid 확인"
-# jar 파일명으로 실행 중인 프로세스를 찾습니다.
-CURRENT_PID=$(pgrep -f $JAR_NAME)
+echo "== 기존 Spring Boot 애플리케이션 종료 =="
 
-if [ -z "$CURRENT_PID" ]; then
-    echo "> 현재 구동 중인 애플리케이션이 없으므로 종료하지 않습니다."
+PID=$(pgrep -f "java -jar")
+
+if [ -n "$PID" ]; then
+  echo "종료할 PID: $PID"
+  kill -15 $PID
+  sleep 5
 else
-    echo "> kill -15 $CURRENT_PID"
-    kill -15 $CURRENT_PID
-    sleep 5
+  echo "실행 중인 애플리케이션이 없습니다."
 fi
 
-echo "> 새 애플리케이션 배포"
-echo "> JAR Name: $JAR_NAME"
+echo "== Spring Boot 애플리케이션 시작 =="
 
-echo "> $JAR_NAME 에 실행권한 추가"
-chmod +x $JAR_NAME
+cd $APP_DIR
+nohup java -jar $JAR_FILE > nohup.out 2>&1 &
 
-echo "> $JAR_NAME 실행"
-nohup java -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
+sleep 10
+
+echo "== 실행 상태 확인 =="
+ps -ef | grep java
+ 
