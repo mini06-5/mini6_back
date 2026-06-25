@@ -4,24 +4,16 @@ server:
 spring:
   application:
     name: bookapp
-  
-  # AWS Parameter Store 연동 설정 추가
+
   config:
-    import: 
+    import:
       - optional:application-local.yml
-      - aws-parameterstore:/bookapp/prod/ # AWS 파라미터 경로
-  cloud:
-    aws:
-      region:
-        static: us-east-1 # 버지니아 북부 리전 적용
-      credentials:
-        use-default-aws-credentials-chain: true
 
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:~/bookdb;
-    username: sa
-    password: 1234
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    url: ${DB_URL:jdbc:h2:file:~/bookdb;}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:1234}
   h2:
     console:
       enabled: true
@@ -37,4 +29,5 @@ jwt:
   refresh-expiration: 86400000
 
 openai:
-  api-key: ${OPENAI_API_KEY}
+  api:
+    key: ${OPENAI_API_KEY:}
